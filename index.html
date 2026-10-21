@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="tr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#000000"><meta name="description" content="Vulénor Timer: mekanik yaprak saat, geri sayım ve kronometre. Dikkatini zamana değil, yaptığın işe ver."><title>Timer · Vulénor</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/timer/timer.css?v=8"><script defer src="/timer/timer.js?v=9"></script><link rel="stylesheet" href="/timer/radio.css?v=1"><script defer src="/timer/radio.js?v=3"></script></head>
+<body>
+<header class="masthead"><a href="/" class="brand" aria-label="Vulénor ana sayfa">vulénor<span class="brand-dot">®</span></a><div class="tools"><button id="sound" class="icon-button" aria-label="Çevirme sesini aç" aria-pressed="false" title="Çevirme sesi (M) · Bitiş alarmı her zaman açık">♪<span>ÇEVİRME SESİ KAPALI</span></button><button id="zen" class="icon-button" aria-label="Odak modunu aç" aria-pressed="false" title="Odak / tam ekran (F)">⛶<span>ODAK</span></button></div></header>
+<main>
+
+<section class="instrument" aria-label="Zaman aracı">
+<div class="mode-switch" role="group" aria-label="Sayaç modu"><button data-mode="timer" class="selected" aria-pressed="true">Geri sayım</button><button data-mode="stopwatch" aria-pressed="false">Kronometre</button></div>
+<div class="clock" id="clock" role="timer" aria-label="00 saat 25 dakika 00 saniye"><div class="unit"><div class="pair" data-unit="hours"></div><span class="unit-label">SAAT</span></div><div class="unit"><div class="pair" data-unit="minutes"></div><span class="unit-label">DAKİKA</span></div><div class="unit"><div class="pair" data-unit="seconds"></div><span class="unit-label">SANİYE</span></div></div>
+<div class="progress-track" aria-hidden="true"><div id="progress"></div></div>
+<div class="status-row"><span class="status-dot" id="status-dot"></span><span id="status" role="status" aria-live="polite">Zamanın hazır.</span><span id="fraction" class="fraction" aria-hidden="true">.00</span></div>
+<div class="transport"><button id="reset" class="secondary" title="Sıfırla (R)">↺ <span>Sıfırla</span></button><button id="start" class="primary">Başlat <span>▶</span></button><button id="edit" class="secondary" title="Süreyi düzenle">◷ <span>Süreyi ayarla</span></button><button id="lap" class="secondary" hidden>＋ <span>Tur ekle</span></button></div>
+<div id="presets" class="presets" aria-label="Hazır süreler"><span>BİR SÜRE SEÇ</span><button data-minutes="15">15 dk</button><button data-minutes="25" class="active">25 dk <small>ODAK</small></button><button data-minutes="45">45 dk</button><button data-minutes="60">60 dk</button></div>
+<section class="study-tools" aria-label="Çalışma düzeni">
+<label class="purpose-label" for="purpose">Bu oturumda ne çalışıyorsun?</label><input id="purpose" maxlength="120" placeholder="Örneğin: Matematik · problemler" autocomplete="off">
+<div class="study-row"><label for="cycle">Çalışma / mola</label><select id="cycle"><option value="none">Serbest süre</option><option value="25">25 dk / 5 dk</option><option value="50">50 dk / 10 dk</option></select><span id="phase" role="status"></span><button id="finish-session" class="secondary" hidden>Oturumu bitir</button></div>
+<details id="study-history"><summary>Çalışma geçmişi <span id="today-total"></span></summary><p class="history-note">Yalnız bu tarayıcıda saklanır. Molalar çalışma toplamına eklenmez.</p><ol id="history-list"></ol><button id="clear-history" class="secondary">Geçmişi temizle</button><p id="storage-warning" role="status" hidden>Tarayıcı kaydı kullanılamıyor; bu oturumdaki geçmiş sayfa kapanınca kaybolabilir.</p></details>
+</section>
+<section id="radio" class="radio" aria-labelledby="radio-title">
+<div class="radio-heading"><h2 id="radio-title">Müzik</h2><span>Sayaçtan bağımsız</span></div>
+<div class="radio-settings"><label>Kaynak<select id="radio-source"><option value="youtube">YouTube</option><option value="archive">Arşivimiz</option></select></label><label>Tür<select id="radio-category"><option value="classical">Klasik</option><option value="jazz">Jazz</option><option value="lofi">Lofi</option><option value="ambient">Ambiyans</option></select></label><label class="radio-volume">Ses <output id="radio-volume-value">35%</output><input id="radio-volume" type="range" min="0" max="100" value="35" aria-label="Müzik ses seviyesi"></label></div>
+<form id="radio-url-form"><label for="radio-url">YouTube video veya oynatma listesi bağlantısı</label><div class="radio-url-row"><input id="radio-url" type="url" maxlength="2048" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off"><button type="submit">Bağlantıyı seç</button></div><button id="radio-default" type="button" class="radio-link">Türün önerisini kullan</button></form>
+<div id="radio-archive" hidden><label for="radio-track">Arşiv parçası</label><select id="radio-track" disabled><option>Arşiv henüz boş</option></select></div>
+<div class="radio-transport"><button id="radio-play" type="button">Müziği başlat</button><span id="radio-status" role="status" aria-live="polite">Başlatmadan YouTube’a bağlanılmaz.</span></div>
+<div id="radio-player-wrap" hidden><div id="radio-player"></div></div>
+<p class="radio-note">YouTube görünür video oynatıcısıyla çalışır. Saatin odak modunda, sekme gizliyken veya video ekran dışında kaldığında duraklatılır; dönüşte kendin başlat. Arşivimizdeki sesler odak modunda devam edebilir. YouTube reklamları ve yayın erişimi sağlayıcıya bağlıdır.</p>
+<a id="radio-external" target="_blank" rel="noopener noreferrer" hidden>YouTube’da aç ↗</a>
+<audio id="radio-audio" preload="none"></audio>
+</section>
+<ol id="laps" class="laps" aria-label="Kronometre turları" hidden></ol>
+</section>
+</main>
+<footer><div class="shortcuts"><span><kbd>SPACE</kbd> başlat / durdur</span><span><kbd>R</kbd> sıfırla</span><span><kbd>F</kbd> odak</span><span><kbd>M</kbd> ses</span></div></footer>
+<dialog id="duration-dialog"><form id="duration-form"><div class="dialog-heading"><h2>Süreyi ayarla</h2><button type="button" id="close-dialog" aria-label="Kapat">×</button></div><p>Ne kadar süre ayırmak istersin?</p><div class="duration-fields"><label>Saat<input id="hours" type="number" min="0" max="99" value="0" required inputmode="numeric"></label><span>:</span><label>Dakika<input id="minutes" type="number" min="0" max="5999" value="25" required inputmode="numeric"></label><span>:</span><label>Saniye<input id="seconds" type="number" min="0" max="5999" value="0" required inputmode="numeric"></label></div><p id="duration-error" role="alert"></p><button type="submit" class="primary">Süreyi ayarla <span>→</span></button></form></dialog>
+<dialog id="completion-dialog" aria-labelledby="completion-title"><div class="dialog-heading"><h2 id="completion-title">Oturum tamamlandı</h2><button id="close-completion" type="button" aria-label="Kapat">×</button></div><p id="completion-summary"></p><div class="completion-actions"><button id="take-break" class="primary">5 dakika mola</button><button id="repeat-session" class="secondary">Aynı süreyi tekrarla</button><button id="add-five" class="secondary">5 dakika ekle</button></div></dialog>
+<button id="exit-zen" hidden>⛶ Odak modundan çık <kbd>F</kbd></button>
+<noscript>Bu zaman aracı için JavaScript’i etkinleştirmen gerekiyor.</noscript>
+</body></html>
